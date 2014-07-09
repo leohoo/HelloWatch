@@ -10,4 +10,6 @@
     <string name="noti_fragment">Notification Test</string>
 
     <string name="send_noti">Send Notification</string>
+    <string name="send_watch_noti">Send Watch-Only Notification</string>
+    <string name="add_big_view">Add Big View</string>
 </resources>

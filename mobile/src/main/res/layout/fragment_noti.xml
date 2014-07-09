@@ -12,5 +12,19 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="@string/send_noti" android:onClick="sendNoti"/>
+        android:layout_height="wrap_content"
+        android:onClick="sendNoti"
+        android:text="@string/send_noti" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendWatchOnlyNoti"
+        android:text="@string/send_watch_noti" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="addBigView"
+        android:text="@string/add_big_view" />
 </LinearLayout>

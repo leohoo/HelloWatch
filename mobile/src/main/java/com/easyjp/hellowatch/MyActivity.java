@@ -1,27 +1,27 @@
 package com.easyjp.hellowatch;
 
-import java.util.Locale;
-
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Action.Builder;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.Arrays;
+import java.util.Locale;
 
 
 public class MyActivity extends Activity implements NotiFragment.OnFragmentInteractionListener {
@@ -167,24 +167,136 @@ public class MyActivity extends Activity implements NotiFragment.OnFragmentInter
 
     public void sendNoti(View btn) {
         int notificationId = 001;
-// Build intent for notification content
+        // Build intent for notification content
         Intent viewIntent = new Intent(this, MyActivity.class);
-        viewIntent.putExtra("EXTRA_EVENT_ID", 1);
+        viewIntent.putExtra("EXTRA_EVENT_ID", notificationId);
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(this, 0, viewIntent, 0);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("title")
-                        .setContentText("text")
+                        .setContentTitle("Hello")
+                        .setContentText("Hello, Watch!")
                         .setContentIntent(viewPendingIntent);
 
-// Get an instance of the NotificationManager service
+        // Build an intent for an action to view a map
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        Uri geoUri = Uri.parse("geo:0,0?q=shibuya");
+        mapIntent.setData(geoUri);
+        PendingIntent mapPendingIntent =
+                PendingIntent.getActivity(this, 0, mapIntent, 0);
+
+
+        // Create an intent for the reply action
+        Intent actionIntent = new Intent(this, MyActivity.class);
+        PendingIntent actionPendingIntent =
+                PendingIntent.getActivity(this, 0, actionIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Create the action
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_launcher,
+                        getString(R.string.app_name), actionPendingIntent)
+                        .build();
+
+        NotificationCompat.Action mapAction = new Builder(android.R.drawable.ic_dialog_map, "Map", mapPendingIntent).build();
+
+        notificationBuilder.addAction(action).addAction(mapAction);
+
+        // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
 
-// Build the notification and issues it with notification manager.
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationId, notificationBuilder.build());
+    }
+
+    public void sendWatchOnlyNoti(View btn) {
+        int notificationId = 002;
+        // Build intent for notification content
+        Intent viewIntent = new Intent(this, MyActivity.class);
+        viewIntent.putExtra("EXTRA_EVENT_ID", notificationId);
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, viewIntent, 0);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("Hello")
+                        .setContentText("Hello, Watch!")
+                        .setContentIntent(viewPendingIntent);
+
+        // Build an intent for an action to view a map
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        Uri geoUri = Uri.parse("geo:0,0?q=shibuya");
+        mapIntent.setData(geoUri);
+        PendingIntent mapPendingIntent =
+                PendingIntent.getActivity(this, 0, mapIntent, 0);
+
+
+        // Create an intent for the reply action
+        Intent actionIntent = new Intent(this, MyActivity.class);
+        PendingIntent actionPendingIntent =
+                PendingIntent.getActivity(this, 0, actionIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Create the action
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_launcher,
+                        getString(R.string.app_name), actionPendingIntent)
+                        .build();
+
+        NotificationCompat.Action mapAction = new Builder(android.R.drawable.ic_dialog_map, "Map", mapPendingIntent).build();
+
+        notificationBuilder.extend(new NotificationCompat.WearableExtender().addActions(Arrays.asList(new NotificationCompat.Action[]{action, mapAction})));
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationId, notificationBuilder.build());
+    }
+
+    public void addBigView(View btn) {
+        int notificationId = 3;
+        // Specify the 'big view' content to display the long
+        // event description that may not fit the normal content text.
+        NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
+
+        bigStyle.bigText("Add big view test\n" +
+                "big view text\n" +
+                "big view text\n" +
+                "big view text\n" +
+                "big view text\n" +
+                "big view text\n" +
+                "big view text");
+        // Build an intent for an action to view a map
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        Uri geoUri = Uri.parse("geo:0,0?q=shibuya");
+        mapIntent.setData(geoUri);
+        PendingIntent mapPendingIntent =
+                PendingIntent.getActivity(this, 0, mapIntent, 0);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(
+                                getResources(), R.drawable.football))
+                        .setContentTitle("big view")
+                        .setContentIntent(mapPendingIntent)
+                        .addAction(android.R.drawable.ic_dialog_map,
+                                "map", mapPendingIntent)
+                        .setStyle(bigStyle);
+
+        notificationBuilder.setVibrate(new long[]{0, 100, 200, 100, 500, 100});
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
 }
