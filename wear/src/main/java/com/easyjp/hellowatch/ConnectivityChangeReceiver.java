@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,7 +24,9 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         Log.d("Connectivity Changed", action);
 
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        String newState = manager.getActiveNetworkInfo().getState().toString();
+        NetworkInfo info = manager.getActiveNetworkInfo();
+
+        String newState = info!=null? info.getState().toString() : "DISCONNECTED";
 
         Toast.makeText(context, newState, Toast.LENGTH_LONG).show();
     }
