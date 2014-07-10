@@ -27,4 +27,23 @@
         android:layout_height="wrap_content"
         android:onClick="addBigView"
         android:text="@string/add_big_view" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="addWearableFeatures"
+        android:text="Add Wearable Features" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="receivingVoiceInput"
+        android:text="Receiving Voice Input" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="stackingNotifications"
+        android:text="Stacking Notifications" />
+
 </LinearLayout>

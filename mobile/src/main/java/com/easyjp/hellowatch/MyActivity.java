@@ -3,8 +3,10 @@ package com.easyjp.hellowatch;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Action.Builder;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +50,6 @@ public class MyActivity extends Activity implements NotiFragment.OnFragmentInter
         setContentView(R.layout.activity_my);
 
 
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
@@ -78,7 +80,6 @@ public class MyActivity extends Activity implements NotiFragment.OnFragmentInter
         return super.onOptionsItemSelected(item);
     }
 
-    
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -151,7 +152,7 @@ public class MyActivity extends Activity implements NotiFragment.OnFragmentInter
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_my, container, false);
             TextView label = (TextView) rootView.findViewById(R.id.section_label);
             Bundle bundle = getArguments();
@@ -298,5 +299,116 @@ public class MyActivity extends Activity implements NotiFragment.OnFragmentInter
 
         // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder.build());
+    }
+
+    public void addWearableFeatures(View btn) {
+        int notificationId = 4;
+
+// Create a WearableExtender to add functionality for wearables
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender()
+                        .setHintHideIcon(true);
+
+        NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle("Extra Page")
+                .setContentText("text\n" +
+                        "text\n" +
+                        "text\n" +
+                        "text\n" +
+                        "text\n" +
+                        "text\n" +
+                        "text\n" +
+                        "text\n");
+
+        Notification page1 = notiBuilder.build();
+        Notification page2 = notiBuilder.setContentTitle("Extra Page 2").build();
+
+        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.brazil);
+        wearableExtender.addPages(Arrays.asList(new Notification[]{page1, page2})).setBackground(background);
+
+        wearableExtender.setHintShowBackgroundOnly(true);
+
+// Create a NotificationCompat.Builder to build a standard notification
+// then extend it with the WearableExtender
+        Notification notif = new NotificationCompat.Builder(this)
+                .setContentTitle("New mail from " + "Eric")
+                .setContentText("Hello, Mountain View")
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
+                .extend(wearableExtender)
+                .build();
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationId, notif);
+    }
+
+    public void receivingVoiceInput(View v) {
+        int notificationId = 5;
+
+        // Key for the string that's delivered in the action's intent
+        final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+
+        String replyLabel = "Would u like some coffee?";
+
+        RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+                .setLabel(replyLabel)
+                .setChoices(getResources().getStringArray(R.array.reply_choices))
+                .build();
+
+// Create an intent for the reply action
+        Intent replyIntent = new Intent(this, ReplyActivity.class);
+        PendingIntent replyPendingIntent =
+                PendingIntent.getActivity(this, 0, replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+// Create the reply action and add the remote input
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_send, "Reply", replyPendingIntent)
+                        .addRemoteInput(remoteInput)
+                        .build();
+
+// Build the notification and add the action via WearableExtender
+        Notification notification =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_plusone_medium_off_client)
+                        .setContentTitle("Title")
+                        .setContentText("content")
+                        .extend(new NotificationCompat.WearableExtender().addAction(action))
+                        .build();
+
+// Issue the notification
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+        notificationManager.notify(notificationId, notification);
+    }
+
+    public void stackingNotifications(View v) {
+        final String GROUP_KEY_EMAILS = "group_key_emails";
+        final int notificationId = 6;
+
+// Build the notification, setting the group appropriately
+        Notification notif = new NotificationCompat.Builder(this)
+                .setContentTitle("New mail from " + "Cook")
+                .setContentText("This watch is really cool!")
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
+                .setGroup(GROUP_KEY_EMAILS)
+                .build();
+
+// Issue the notification
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+        notificationManager.notify(notificationId, notif);
+
+        Notification notif2 = new NotificationCompat.Builder(this)
+                .setContentTitle("New mail from " + "Cook")
+                .setContentText("I want a G watch too.")
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
+        .setGroup(GROUP_KEY_EMAILS)
+                .build();
+
+        notificationManager.notify(5, notif2);
     }
 }

@@ -17,7 +17,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
-        vibrator.vibrate(new long[] {0,50,200,50,200,50,400,100}, -1);
+        long vibConnected[] = new long[] {0, 50};
+        long vibDisconnected[] = new long[] {0,50,200,50,200,50,400,100};
 
         String action = intent.getAction();
 
@@ -29,5 +30,11 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         String newState = info!=null? info.getState().toString() : "DISCONNECTED";
 
         Toast.makeText(context, newState, Toast.LENGTH_LONG).show();
+
+        if(newState.equals("DISCONNECTED")){
+            vibrator.vibrate(vibDisconnected, -1);
+        } else {
+            vibrator.vibrate(vibConnected, -1);
+        }
     }
 }
