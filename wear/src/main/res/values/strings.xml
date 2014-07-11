@@ -7,5 +7,6 @@
     <string name="title_activity_features_list">FeaturesListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_nearby_btdevices">NearbyBTDevices</string>
 
 </resources>

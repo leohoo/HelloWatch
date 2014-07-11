@@ -1,18 +1,38 @@
 package com.easyjp.hellowatch;
 
-import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+public class FeaturesListActivity extends ListActivity {
 
-public class FeaturesListActivity extends Activity {
+    FeatureArrayAdaper adapter;
+
+    class FeatureArrayAdaper extends ArrayAdapter<FeatureInfo> {
+        FeatureArrayAdaper(Context context, int resource, FeatureInfo[] objects) {
+            super(context, resource, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView view = (TextView)super.getView(position, convertView, parent);
+            FeatureInfo f = getItem(position);
+            String text = (null != f.name)? f.name : f.toString();
+            view.setText(text);
+
+            return view;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +44,9 @@ public class FeaturesListActivity extends Activity {
 
         FeatureInfo[] features = pm.getSystemAvailableFeatures();
 
-        final ListView listview = (ListView) findViewById(R.id.listview);
+        adapter = new FeatureArrayAdaper(this, R.layout.list_item_layout, features);
 
-        List<String> items = new ArrayList<String>();
-        for(FeatureInfo f : features) {
-            if(null != f.name)
-                items.add(f.name);
-            else
-                items.add(f.toString());
-        }
-
-        final ArrayAdapter adapter = new ArrayAdapter(this,
-                R.layout.feature_item_layout, items);
-
-        listview.setAdapter(adapter);
+        setListAdapter(adapter);
     }
 
 
@@ -58,5 +67,11 @@ public class FeaturesListActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        FeatureInfo f = adapter.getItem(position);
+        Toast.makeText(this, f.name, Toast.LENGTH_SHORT).show();
     }
 }
