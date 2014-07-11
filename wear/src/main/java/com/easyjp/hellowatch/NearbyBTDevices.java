@@ -84,4 +84,10 @@ public class NearbyBTDevices extends ListActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
+    }
 }
