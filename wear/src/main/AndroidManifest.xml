@@ -3,6 +3,9 @@
     package="com.easyjp.hellowatch" >
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -46,6 +49,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.app.ListActivity" />
+        </activity>
+        <activity
+            android:name=".BluetoothLEActivity"
+            android:label="@string/title_activity_bluetooth_le" >
         </activity>
     </application>
 

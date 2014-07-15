@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="notifications" type="id" />
+    <item name="show_features" type="id" />
+    <item name="get_location" type="id" />
+    <item name="scan_bt_devices" type="id" />
+    <item name="bluetooth_le" type="id" />
+
+</resources>
